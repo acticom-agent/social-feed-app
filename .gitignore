@@ -1,0 +1,16 @@
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+*.iml
+
+# iOS
+ios/build/
+ios/DerivedData/
+*.xcuserstate
+*.xcworkspacedata
+
+# General
+.DS_Store
+*.log
