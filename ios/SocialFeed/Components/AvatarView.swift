@@ -1,15 +1,19 @@
 import SwiftUI
 
 struct AvatarView: View {
-    let imagePath: String?
+    let avatarUrl: String?
     var size: CGFloat = 40
     
     var body: some View {
         Group {
-            if let path = imagePath, let image = ImageManager.shared.loadImage(named: path) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
+            if let urlString = avatarUrl, let url = URL(string: urlString) {
+                AsyncImage(url: url) { image in
+                    image.resizable().scaledToFill()
+                } placeholder: {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .foregroundStyle(.secondary)
+                }
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()

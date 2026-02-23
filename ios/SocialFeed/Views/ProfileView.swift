@@ -6,9 +6,8 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Profile header
                 VStack(spacing: 12) {
-                    AvatarView(imagePath: viewModel.user?.avatarPath, size: 80)
+                    AvatarView(avatarUrl: viewModel.user?.avatarUrl, size: 80)
                     
                     Text(viewModel.user?.username ?? "Unknown")
                         .font(.title2)
@@ -28,7 +27,6 @@ struct ProfileView: View {
                 
                 Divider()
                 
-                // User's posts grid
                 if viewModel.userPosts.isEmpty {
                     VStack(spacing: 8) {
                         Image(systemName: "camera")
@@ -45,28 +43,18 @@ struct ProfileView: View {
                         GridItem(.flexible(), spacing: 2),
                         GridItem(.flexible(), spacing: 2)
                     ], spacing: 2) {
-                        ForEach(viewModel.userPosts, id: \.objectID) { post in
+                        ForEach(viewModel.userPosts) { post in
                             NavigationLink {
                                 PostDetailView(post: post)
                             } label: {
-                                if let imagePath = post.imagePath,
-                                   let image = ImageManager.shared.loadImage(named: imagePath) {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(minWidth: 0, maxWidth: .infinity)
+                                ZStack {
+                                    Rectangle()
+                                        .fill(Color(.secondarySystemBackground))
                                         .aspectRatio(1, contentMode: .fill)
-                                        .clipped()
-                                } else {
-                                    ZStack {
-                                        Rectangle()
-                                            .fill(Color(.secondarySystemBackground))
-                                            .aspectRatio(1, contentMode: .fill)
-                                        Text(post.text ?? "")
-                                            .font(.caption2)
-                                            .padding(4)
-                                            .lineLimit(3)
-                                    }
+                                    Text(post.text)
+                                        .font(.caption2)
+                                        .padding(4)
+                                        .lineLimit(3)
                                 }
                             }
                         }

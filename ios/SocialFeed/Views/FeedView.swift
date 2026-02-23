@@ -20,13 +20,12 @@ struct FeedView: View {
                     }
                     .padding(.top, 100)
                 } else {
-                    ForEach(viewModel.posts, id: \.objectID) { post in
+                    ForEach(viewModel.posts) { post in
                         NavigationLink {
                             PostDetailView(post: post)
                         } label: {
                             PostCardView(
                                 post: post,
-                                author: viewModel.getAuthor(for: post),
                                 likeCount: viewModel.likeCount(for: post),
                                 commentCount: viewModel.commentCount(for: post),
                                 isLiked: viewModel.isLiked(post),

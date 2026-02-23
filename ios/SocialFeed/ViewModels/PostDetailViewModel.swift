@@ -1,56 +1,54 @@
 import SwiftUI
-import CoreData
 
+@MainActor
 class PostDetailViewModel: ObservableObject {
-    @Published var comments: [CommentEntity] = []
+    @Published var comments: [APIComment] = []
     @Published var newCommentText = ""
+    @Published var liked = false
+    @Published var currentLikeCount = 0
     
-    let post: PostEntity
-    private let commentRepo: CommentRepository
-    private let likeRepo: LikeRepository
-    private let userRepo: UserRepository
+    let post: APIPost
+    private let api = APIService.shared
     
-    init(post: PostEntity, context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
+    init(post: APIPost) {
         self.post = post
-        self.commentRepo = CommentRepository(context: context)
-        self.likeRepo = LikeRepository(context: context)
-        self.userRepo = UserRepository(context: context)
+        self.currentLikeCount = post._count?.likes ?? 0
         loadComments()
     }
     
     func loadComments() {
-        guard let postId = post.id else { return }
-        comments = commentRepo.fetchComments(for: postId)
+        Task {
+            do {
+                comments = try await api.fetchComments(postId: post.id)
+            } catch {
+                print("Error loading comments: \(error)")
+            }
+        }
     }
     
     func addComment() {
         let trimmed = newCommentText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty,
-              let postId = post.id,
-              let userId = userRepo.currentUser?.id else { return }
-        commentRepo.addComment(postId: postId, authorId: userId, text: trimmed)
-        newCommentText = ""
-        loadComments()
-    }
-    
-    func likeCount() -> Int {
-        guard let postId = post.id else { return 0 }
-        return likeRepo.likeCount(for: postId)
-    }
-    
-    func isLiked() -> Bool {
-        guard let postId = post.id, let userId = userRepo.currentUser?.id else { return false }
-        return likeRepo.isLiked(postId: postId, userId: userId)
+        guard !trimmed.isEmpty else { return }
+        Task {
+            do {
+                let comment = try await api.addComment(postId: post.id, text: trimmed)
+                comments.append(comment)
+                newCommentText = ""
+            } catch {
+                print("Error adding comment: \(error)")
+            }
+        }
     }
     
     func toggleLike() {
-        guard let postId = post.id, let userId = userRepo.currentUser?.id else { return }
-        likeRepo.toggleLike(postId: postId, userId: userId)
-        objectWillChange.send()
-    }
-    
-    func getAuthor(for authorId: UUID?) -> UserEntity? {
-        guard let id = authorId else { return nil }
-        return userRepo.getUser(by: id)
+        Task {
+            do {
+                let resp = try await api.toggleLike(postId: post.id)
+                liked = resp.liked
+                currentLikeCount = resp.likesCount
+            } catch {
+                print("Error toggling like: \(error)")
+            }
+        }
     }
 }

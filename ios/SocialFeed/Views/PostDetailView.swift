@@ -3,7 +3,7 @@ import SwiftUI
 struct PostDetailView: View {
     @StateObject private var viewModel: PostDetailViewModel
     
-    init(post: PostEntity) {
+    init(post: APIPost) {
         _viewModel = StateObject(wrappedValue: PostDetailViewModel(post: post))
     }
     
@@ -12,13 +12,12 @@ struct PostDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
                     // Post header
-                    let author = viewModel.getAuthor(for: viewModel.post.authorId)
                     HStack(spacing: 12) {
-                        AvatarView(imagePath: author?.avatarPath, size: 40)
+                        AvatarView(avatarUrl: viewModel.post.author.avatarUrl, size: 40)
                         VStack(alignment: .leading) {
-                            Text(author?.username ?? "Unknown")
+                            Text(viewModel.post.author.username)
                                 .fontWeight(.semibold)
-                            Text(viewModel.post.createdAt ?? Date(), style: .relative)
+                            Text(viewModel.post.createdAtDate, style: .relative)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -27,21 +26,22 @@ struct PostDetailView: View {
                     .padding(.horizontal)
                     
                     // Image
-                    if let imagePath = viewModel.post.imagePath,
-                       let image = ImageManager.shared.loadImage(named: imagePath) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity)
+                    if let imageUrl = viewModel.post.imageUrl, let url = URL(string: imageUrl) {
+                        AsyncImage(url: url) { image in
+                            image.resizable().scaledToFit()
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                     
                     // Actions
                     HStack(spacing: 16) {
                         Button { viewModel.toggleLike() } label: {
                             HStack(spacing: 4) {
-                                Image(systemName: viewModel.isLiked() ? "heart.fill" : "heart")
-                                    .foregroundStyle(viewModel.isLiked() ? .red : .primary)
-                                Text("\(viewModel.likeCount())")
+                                Image(systemName: viewModel.liked ? "heart.fill" : "heart")
+                                    .foregroundStyle(viewModel.liked ? .red : .primary)
+                                Text("\(viewModel.currentLikeCount)")
                             }
                         }
                         .buttonStyle(.plain)
@@ -57,11 +57,11 @@ struct PostDetailView: View {
                     .padding(.horizontal)
                     
                     // Text
-                    if let text = viewModel.post.text, !text.isEmpty {
+                    if !viewModel.post.text.isEmpty {
                         HStack(spacing: 4) {
-                            Text(author?.username ?? "")
+                            Text(viewModel.post.author.username)
                                 .fontWeight(.semibold)
-                            Text(text)
+                            Text(viewModel.post.text)
                         }
                         .font(.subheadline)
                         .padding(.horizontal)
@@ -71,19 +71,18 @@ struct PostDetailView: View {
                         .padding(.vertical, 8)
                     
                     // Comments
-                    ForEach(viewModel.comments, id: \.objectID) { comment in
-                        let commentAuthor = viewModel.getAuthor(for: comment.authorId)
+                    ForEach(viewModel.comments) { comment in
                         HStack(alignment: .top, spacing: 10) {
-                            AvatarView(imagePath: commentAuthor?.avatarPath, size: 28)
+                            AvatarView(avatarUrl: comment.author.avatarUrl, size: 28)
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(spacing: 4) {
-                                    Text(commentAuthor?.username ?? "Unknown")
+                                    Text(comment.author.username)
                                         .fontWeight(.semibold)
-                                    Text(comment.text ?? "")
+                                    Text(comment.text)
                                 }
                                 .font(.subheadline)
                                 
-                                Text(comment.createdAt ?? Date(), style: .relative)
+                                Text(comment.createdAtDate, style: .relative)
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }

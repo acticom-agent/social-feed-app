@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct PostCardView: View {
-    let post: PostEntity
-    let author: UserEntity?
+    let post: APIPost
     let likeCount: Int
     let commentCount: Int
     let isLiked: Bool
@@ -12,13 +11,13 @@ struct PostCardView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
             HStack(spacing: 12) {
-                AvatarView(imagePath: author?.avatarPath, size: 36)
+                AvatarView(avatarUrl: post.author.avatarUrl, size: 36)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(author?.username ?? "Unknown")
+                    Text(post.author.username)
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                    Text(post.createdAt ?? Date(), style: .relative)
+                    Text(post.createdAtDate, style: .relative)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -29,13 +28,15 @@ struct PostCardView: View {
             .padding(.vertical, 10)
             
             // Image
-            if let imagePath = post.imagePath, let image = ImageManager.shared.loadImage(named: imagePath) {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: 400)
-                    .clipped()
+            if let imageUrl = post.imageUrl, let url = URL(string: imageUrl) {
+                AsyncImage(url: url) { image in
+                    image.resizable().scaledToFill()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: 400)
+                .clipped()
             }
             
             // Actions
@@ -65,11 +66,11 @@ struct PostCardView: View {
             }
             
             // Text
-            if let text = post.text, !text.isEmpty {
+            if !post.text.isEmpty {
                 HStack(spacing: 4) {
-                    Text(author?.username ?? "")
+                    Text(post.author.username)
                         .fontWeight(.semibold)
-                    Text(text)
+                    Text(post.text)
                 }
                 .font(.subheadline)
                 .padding(.horizontal)

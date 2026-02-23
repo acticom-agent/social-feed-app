@@ -1,33 +1,27 @@
 import SwiftUI
 import PhotosUI
-import CoreData
 
+@MainActor
 class ProfileViewModel: ObservableObject {
-    @Published var user: UserEntity?
-    @Published var userPosts: [PostEntity] = []
+    @Published var user: APIUser?
+    @Published var userPosts: [APIPost] = []
     @Published var username = ""
     @Published var selectedItem: PhotosPickerItem?
     @Published var avatarImage: UIImage?
     
-    private let userRepo: UserRepository
-    private let postRepo: PostRepository
-    
-    init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
-        self.userRepo = UserRepository(context: context)
-        self.postRepo = PostRepository(context: context)
-        loadProfile()
-    }
+    private let api = APIService.shared
     
     func loadProfile() {
-        userRepo.fetchCurrentUser()
-        user = userRepo.currentUser
-        if let user = user {
-            username = user.username ?? ""
-            if let path = user.avatarPath {
-                avatarImage = ImageManager.shared.loadImage(named: path)
-            }
-            if let userId = user.id {
-                userPosts = postRepo.fetchPosts(by: userId)
+        Task {
+            do {
+                let me = try await api.me()
+                user = me
+                username = me.username
+                // Load user's posts from the feed
+                let allPosts = try await api.fetchPosts(limit: 100)
+                userPosts = allPosts.filter { $0.author.id == me.id }
+            } catch {
+                print("Error loading profile: \(error)")
             }
         }
     }
@@ -36,28 +30,19 @@ class ProfileViewModel: ObservableObject {
         guard let item = selectedItem else { return }
         if let data = try? await item.loadTransferable(type: Data.self),
            let image = UIImage(data: data) {
-            await MainActor.run {
-                self.avatarImage = image
-            }
+            self.avatarImage = image
         }
-    }
-    
-    func createUser() {
-        var avatarPath: String?
-        if let image = avatarImage {
-            avatarPath = ImageManager.shared.saveImage(image, name: "avatar.jpg")
-        }
-        userRepo.createUser(username: username, avatarPath: avatarPath)
-        user = userRepo.currentUser
     }
     
     func updateProfile() {
-        var avatarPath: String?
-        if let image = avatarImage {
-            avatarPath = ImageManager.shared.saveImage(image, name: "avatar.jpg")
+        Task {
+            do {
+                let updated = try await api.updateMe(username: username, avatarUrl: nil)
+                user = updated
+            } catch {
+                print("Error updating profile: \(error)")
+            }
         }
-        userRepo.updateUser(username: username, avatarPath: avatarPath)
-        loadProfile()
     }
     
     var postCount: Int { userPosts.count }
