@@ -2,17 +2,15 @@ import SwiftUI
 
 @main
 struct SocialFeedApp: App {
-    let persistenceController = PersistenceController.shared
-    @AppStorage("hasCompletedSetup") private var hasCompletedSetup = false
+    @StateObject private var authVM = AuthViewModel.shared
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedSetup {
+            if authVM.isAuthenticated {
                 ContentView()
-                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environmentObject(authVM)
             } else {
-                ProfileSetupView()
-                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                LoginView(authVM: authVM)
             }
         }
     }
