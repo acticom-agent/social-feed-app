@@ -3,7 +3,7 @@ package com.example.socialfeed.ui.screens.settings
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -66,7 +66,7 @@ fun SettingsScreen(
             title = { Text("Settings", fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    Icon(Icons.Filled.ArrowBack, "Back")
                 }
             }
         )
@@ -87,7 +87,7 @@ fun SettingsScreen(
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Row {
-                        Icon(Icons.Default.DarkMode, contentDescription = null)
+                        Icon(Icons.Filled.DarkMode, contentDescription = null)
                         Spacer(Modifier.width(12.dp))
                         Text("Dark Mode", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -102,7 +102,7 @@ fun SettingsScreen(
 
             // Export as JSON
             SettingsButton(
-                icon = Icons.Default.Download,
+                icon = Icons.Filled.Download,
                 text = "Export as JSON",
                 onClick = {
                     viewModel.exportAsJson { path ->
@@ -115,7 +115,7 @@ fun SettingsScreen(
 
             // Reset profile
             SettingsButton(
-                icon = Icons.Default.PersonOff,
+                icon = Icons.Filled.PersonOff,
                 text = "Reset Profile",
                 onClick = { showResetDialog = true },
                 isDestructive = true
@@ -125,7 +125,7 @@ fun SettingsScreen(
 
             // Clear all data
             SettingsButton(
-                icon = Icons.Default.DeleteForever,
+                icon = Icons.Filled.DeleteForever,
                 text = "Clear All Data",
                 onClick = { showClearDialog = true },
                 isDestructive = true

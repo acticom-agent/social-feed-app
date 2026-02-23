@@ -114,7 +114,7 @@ fun PostCard(
             ) {
                 IconButton(onClick = onLikeClick) {
                     Icon(
-                        if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Like",
                         tint = if (isLiked) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant
@@ -128,7 +128,7 @@ fun PostCard(
                 Spacer(Modifier.width(8.dp))
                 IconButton(onClick = onClick) {
                     Icon(
-                        Icons.Default.ChatBubbleOutline,
+                        Icons.Filled.ChatBubbleOutline,
                         contentDescription = "Comments",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -140,7 +140,7 @@ fun PostCard(
                 )
             }
 
-            HorizontalDivider(thickness = 0.5.dp)
+            Divider(thickness = 0.5.dp)
         }
     }
 }

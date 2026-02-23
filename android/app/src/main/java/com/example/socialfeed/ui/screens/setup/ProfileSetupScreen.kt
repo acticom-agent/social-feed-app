@@ -80,7 +80,7 @@ fun ProfileSetupScreen(
                 )
             } else {
                 Icon(
-                    Icons.Default.CameraAlt,
+                    Icons.Filled.CameraAlt,
                     contentDescription = "Pick avatar",
                     modifier = Modifier.size(40.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant

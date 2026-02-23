@@ -76,7 +76,7 @@ fun CreatePostScreen(
                         modifier = Modifier.align(Alignment.TopEnd)
                     ) {
                         Icon(
-                            Icons.Default.Close,
+                            Icons.Filled.Close,
                             contentDescription = "Remove image",
                             tint = MaterialTheme.colorScheme.error
                         )
@@ -90,7 +90,7 @@ fun CreatePostScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Icon(Icons.Default.Image, contentDescription = null)
+                Icon(Icons.Filled.Image, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text("Add Image")
             }

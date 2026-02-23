@@ -36,7 +36,7 @@ fun ProfileScreen(
             title = { Text("Profile", fontWeight = FontWeight.Bold) },
             actions = {
                 IconButton(onClick = onSettingsClick) {
-                    Icon(Icons.Default.Settings, "Settings")
+                    Icon(Icons.Filled.Settings, "Settings")
                 }
             }
         )
@@ -91,7 +91,7 @@ fun ProfileScreen(
                     }
                 }
 
-                HorizontalDivider()
+                Divider()
             }
 
             // User's posts

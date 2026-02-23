@@ -6,10 +6,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -49,7 +49,7 @@ fun PostDetailScreen(
             title = { Text("Post", fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    Icon(Icons.Filled.ArrowBack, "Back")
                 }
             }
         )
@@ -119,7 +119,7 @@ fun PostDetailScreen(
                         ) {
                             IconButton(onClick = { viewModel.toggleLike() }) {
                                 Icon(
-                                    if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                    if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                     contentDescription = "Like",
                                     tint = if (isLiked) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurfaceVariant
@@ -131,7 +131,7 @@ fun PostDetailScreen(
                             )
                         }
 
-                        HorizontalDivider()
+                        Divider()
 
                         Text(
                             "Comments (${comments.size})",
@@ -149,7 +149,7 @@ fun PostDetailScreen(
             }
 
             // Comment input
-            HorizontalDivider()
+            Divider()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -170,7 +170,7 @@ fun PostDetailScreen(
                     enabled = commentText.isNotBlank()
                 ) {
                     Icon(
-                        Icons.AutoMirrored.Filled.Send,
+                        Icons.Filled.Send,
                         contentDescription = "Send",
                         tint = if (commentText.isNotBlank()) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant

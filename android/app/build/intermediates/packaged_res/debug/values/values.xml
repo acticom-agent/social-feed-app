@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Social Feed</string>
+    <style name="Theme.SocialFeed" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>
