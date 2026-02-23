@@ -10,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
@@ -24,6 +26,9 @@ private val LightColorScheme = lightColorScheme(
     background = Color(0xFFFFFBFF),
     surface = Color(0xFFFFFBFF),
     surfaceVariant = Color(0xFFF2DDE1),
+    onSurface = Color(0xFF1C1B1F),
+    onSurfaceVariant = Color(0xFF514347),
+    outline = Color(0xFF837377),
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -35,15 +40,18 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color(0xFF422931),
     secondaryContainer = Color(0xFF5A3F47),
     tertiary = Color(0xFFFFB2B5),
-    background = Color(0xFF1A1A1A),
-    surface = Color(0xFF1A1A1A),
-    surfaceVariant = Color(0xFF514347),
+    background = Color(0xFF121212),
+    surface = Color(0xFF121212),
+    surfaceVariant = Color(0xFF2C2C2C),
+    onSurface = Color(0xFFE6E1E5),
+    onSurfaceVariant = Color(0xFFD6C2C6),
+    outline = Color(0xFF9E8C90),
 )
 
 @Composable
 fun SocialFeedTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -60,7 +68,11 @@ fun SocialFeedTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.surface.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.navigationBarColor = colorScheme.surface.toArgb()
+            WindowCompat.getInsetsController(window, view).apply {
+                isAppearanceLightStatusBars = !darkTheme
+                isAppearanceLightNavigationBars = !darkTheme
+            }
         }
     }
 
