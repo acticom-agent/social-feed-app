@@ -9,38 +9,28 @@
 /* Begin PBXBuildFile section */
 		A10000010000000000000001 /* SocialFeedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001; };
 		A10000010000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002; };
-		A10000010000000000000003 /* SocialFeed.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003; };
-		A10000010000000000000004 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004; };
-		A10000010000000000000005 /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005; };
-		A10000010000000000000006 /* PostRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006; };
-		A10000010000000000000007 /* LikeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007; };
-		A10000010000000000000008 /* CommentRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008; };
-		A10000010000000000000009 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009; };
 		A1000001000000000000000A /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A; };
 		A1000001000000000000000B /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B; };
 		A1000001000000000000000C /* CreatePostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C; };
 		A1000001000000000000000D /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D; };
+		A10000010000000000000009 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009; };
 		A1000001000000000000000E /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E; };
 		A1000001000000000000000F /* PostCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F; };
 		A10000010000000000000010 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010; };
 		A10000010000000000000011 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011; };
-		A10000010000000000000012 /* ProfileSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012; };
 		A10000010000000000000013 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000013; };
 		A10000010000000000000014 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000014; };
-		A10000010000000000000015 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015; };
 		A10000010000000000000016 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016; };
 		A10000010000000000000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017; };
+		B10000010000000000000001 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001; };
+		B10000010000000000000002 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000002; };
+		B10000010000000000000003 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000003; };
+		B10000010000000000000004 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000004; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A20000010000000000000001 /* SocialFeedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialFeedApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A20000010000000000000003 /* SocialFeed.xcdatamodeld */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodeld; path = SocialFeed.xcdatamodeld; sourceTree = "<group>"; };
-		A20000010000000000000004 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		A20000010000000000000005 /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
-		A20000010000000000000006 /* PostRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostRepository.swift; sourceTree = "<group>"; };
-		A20000010000000000000007 /* LikeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeRepository.swift; sourceTree = "<group>"; };
-		A20000010000000000000008 /* CommentRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentRepository.swift; sourceTree = "<group>"; };
 		A20000010000000000000009 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		A2000001000000000000000A /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		A2000001000000000000000B /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
@@ -50,13 +40,16 @@
 		A2000001000000000000000F /* PostCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCardView.swift; sourceTree = "<group>"; };
 		A20000010000000000000010 /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		A20000010000000000000011 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		A20000010000000000000012 /* ProfileSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSetupView.swift; sourceTree = "<group>"; };
 		A20000010000000000000013 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000014 /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
-		A20000010000000000000015 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000016 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		A20000010000000000000017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A30000010000000000000001 /* SocialFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocialFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B20000010000000000000001 /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		B20000010000000000000002 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		B20000010000000000000003 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		B20000010000000000000004 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B20000010000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,10 +76,8 @@
 			children = (
 				A20000010000000000000001 /* SocialFeedApp.swift */,
 				A20000010000000000000002 /* ContentView.swift */,
-				A20000010000000000000003 /* SocialFeed.xcdatamodeld */,
+				B20000010000000000000005 /* Info.plist */,
 				A50000010000000000000003 /* Models */,
-				A50000010000000000000004 /* Persistence */,
-				A50000010000000000000005 /* Repositories */,
 				A50000010000000000000006 /* ViewModels */,
 				A50000010000000000000007 /* Views */,
 				A50000010000000000000008 /* Components */,
@@ -98,28 +89,10 @@
 		A50000010000000000000003 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A20000010000000000000015 /* ImageManager.swift */,
+				B20000010000000000000001 /* APIModels.swift */,
+				B20000010000000000000002 /* APIService.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000004 /* Persistence */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000004 /* PersistenceController.swift */,
-			);
-			path = Persistence;
-			sourceTree = "<group>";
-		};
-		A50000010000000000000005 /* Repositories */ = {
-			isa = PBXGroup;
-			children = (
-				A20000010000000000000005 /* UserRepository.swift */,
-				A20000010000000000000006 /* PostRepository.swift */,
-				A20000010000000000000007 /* LikeRepository.swift */,
-				A20000010000000000000008 /* CommentRepository.swift */,
-			);
-			path = Repositories;
 			sourceTree = "<group>";
 		};
 		A50000010000000000000006 /* ViewModels */ = {
@@ -130,6 +103,7 @@
 				A2000001000000000000000B /* PostDetailViewModel.swift */,
 				A2000001000000000000000C /* CreatePostViewModel.swift */,
 				A2000001000000000000000D /* SettingsViewModel.swift */,
+				B20000010000000000000003 /* AuthViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -140,9 +114,9 @@
 				A2000001000000000000000E /* FeedView.swift */,
 				A20000010000000000000010 /* CreatePostView.swift */,
 				A20000010000000000000011 /* ProfileView.swift */,
-				A20000010000000000000012 /* ProfileSetupView.swift */,
 				A20000010000000000000013 /* SettingsView.swift */,
 				A20000010000000000000014 /* PostDetailView.swift */,
+				B20000010000000000000004 /* LoginView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -235,12 +209,10 @@
 			files = (
 				A10000010000000000000001 /* SocialFeedApp.swift in Sources */,
 				A10000010000000000000002 /* ContentView.swift in Sources */,
-				A10000010000000000000003 /* SocialFeed.xcdatamodeld in Sources */,
-				A10000010000000000000004 /* PersistenceController.swift in Sources */,
-				A10000010000000000000005 /* UserRepository.swift in Sources */,
-				A10000010000000000000006 /* PostRepository.swift in Sources */,
-				A10000010000000000000007 /* LikeRepository.swift in Sources */,
-				A10000010000000000000008 /* CommentRepository.swift in Sources */,
+				B10000010000000000000001 /* APIModels.swift in Sources */,
+				B10000010000000000000002 /* APIService.swift in Sources */,
+				B10000010000000000000003 /* AuthViewModel.swift in Sources */,
+				B10000010000000000000004 /* LoginView.swift in Sources */,
 				A10000010000000000000009 /* ProfileViewModel.swift in Sources */,
 				A1000001000000000000000A /* FeedViewModel.swift in Sources */,
 				A1000001000000000000000B /* PostDetailViewModel.swift in Sources */,
@@ -250,10 +222,8 @@
 				A1000001000000000000000F /* PostCardView.swift in Sources */,
 				A10000010000000000000010 /* CreatePostView.swift in Sources */,
 				A10000010000000000000011 /* ProfileView.swift in Sources */,
-				A10000010000000000000012 /* ProfileSetupView.swift in Sources */,
 				A10000010000000000000013 /* SettingsView.swift in Sources */,
 				A10000010000000000000014 /* PostDetailView.swift in Sources */,
-				A10000010000000000000015 /* ImageManager.swift in Sources */,
 				A10000010000000000000016 /* AvatarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -324,6 +294,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SocialFeed/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SocialFeed/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SocialFeed;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SocialFeed needs access to your photos to set your avatar and share images.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -354,6 +325,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"SocialFeed/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SocialFeed/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SocialFeed;
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SocialFeed needs access to your photos to set your avatar and share images.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
