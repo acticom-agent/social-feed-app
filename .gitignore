@@ -14,3 +14,9 @@ ios/DerivedData/
 # General
 .DS_Store
 *.log
+backend/node_modules/
+backend/dist/
+backend/dev.db
+backend/.env
+backend/uploads/*
+!backend/uploads/.gitkeep
