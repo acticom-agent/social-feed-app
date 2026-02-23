@@ -4,10 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import com.example.socialfeed.data.datastore.UserPreferences
+import com.example.socialfeed.ui.navigation.Screen
+import com.example.socialfeed.ui.navigation.SocialFeedNavGraph
 import com.example.socialfeed.ui.theme.SocialFeedTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,12 +16,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SocialFeedTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // Navigation will be added later
+            val context = LocalContext.current
+            val prefs = remember { UserPreferences(context) }
+            val isSetup by prefs.isProfileSetup.collectAsState(initial = null)
+            val darkMode by prefs.darkMode.collectAsState(initial = null)
+
+            SocialFeedTheme(darkTheme = darkMode ?: false) {
+                when (isSetup) {
+                    null -> {} // Loading
+                    true -> SocialFeedNavGraph(startDestination = Screen.Feed.route)
+                    false -> SocialFeedNavGraph(startDestination = Screen.Setup.route)
                 }
             }
         }
