@@ -17,14 +17,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.socialfeed.data.db.dao.PostWithDetails
-import java.io.File
+import com.example.socialfeed.data.api.ApiPost
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun PostCard(
-    post: PostWithDetails,
+    post: ApiPost,
     isLiked: Boolean,
     onLikeClick: () -> Unit,
     onClick: () -> Unit
@@ -45,9 +44,9 @@ fun PostCard(
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (post.avatarPath != null) {
+                if (post.author.avatarUrl != null) {
                     AsyncImage(
-                        model = File(post.avatarPath),
+                        model = post.author.avatarUrl,
                         contentDescription = "Avatar",
                         modifier = Modifier
                             .size(36.dp)
@@ -62,7 +61,7 @@ fun PostCard(
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(
-                                post.username.take(1).uppercase(),
+                                post.author.username.take(1).uppercase(),
                                 style = MaterialTheme.typography.titleSmall,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -72,7 +71,7 @@ fun PostCard(
                 Spacer(Modifier.width(10.dp))
                 Column {
                     Text(
-                        post.username,
+                        post.author.username,
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -85,9 +84,9 @@ fun PostCard(
             }
 
             // Image
-            if (post.imagePath != null) {
+            if (post.imageUrl != null) {
                 AsyncImage(
-                    model = File(post.imagePath),
+                    model = post.imageUrl,
                     contentDescription = "Post image",
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,7 +120,7 @@ fun PostCard(
                     )
                 }
                 Text(
-                    "${post.likeCount}",
+                    "${post.count?.likes ?: 0}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -134,7 +133,7 @@ fun PostCard(
                     )
                 }
                 Text(
-                    "${post.commentCount}",
+                    "${post.count?.comments ?: 0}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -145,12 +144,19 @@ fun PostCard(
     }
 }
 
-private fun formatTime(millis: Long): String {
-    val diff = System.currentTimeMillis() - millis
-    return when {
-        diff < 60_000 -> "just now"
-        diff < 3_600_000 -> "${diff / 60_000}m ago"
-        diff < 86_400_000 -> "${diff / 3_600_000}h ago"
-        else -> SimpleDateFormat("MMM d", Locale.getDefault()).format(Date(millis))
+private fun formatTime(isoString: String): String {
+    return try {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        val date = sdf.parse(isoString) ?: return isoString
+        val diff = System.currentTimeMillis() - date.time
+        when {
+            diff < 60_000 -> "just now"
+            diff < 3_600_000 -> "${diff / 60_000}m ago"
+            diff < 86_400_000 -> "${diff / 3_600_000}h ago"
+            else -> SimpleDateFormat("MMM d", Locale.getDefault()).format(date)
+        }
+    } catch (e: Exception) {
+        isoString
     }
 }

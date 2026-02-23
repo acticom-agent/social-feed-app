@@ -17,9 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.socialfeed.ui.components.PostCard
-import com.example.socialfeed.viewmodel.FeedViewModel
 import com.example.socialfeed.viewmodel.ProfileViewModel
-import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +40,6 @@ fun ProfileScreen(
         )
 
         LazyColumn {
-            // Profile header
             item {
                 Column(
                     modifier = Modifier
@@ -51,9 +48,9 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     user?.let { u ->
-                        if (u.avatarPath != null) {
+                        if (u.avatarUrl != null) {
                             AsyncImage(
-                                model = File(u.avatarPath),
+                                model = u.avatarUrl,
                                 contentDescription = "Avatar",
                                 modifier = Modifier
                                     .size(80.dp)
@@ -84,7 +81,7 @@ fun ProfileScreen(
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "${posts.size} posts",
+                            "${u.count?.posts ?: posts.size} posts",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -94,13 +91,12 @@ fun ProfileScreen(
                 Divider()
             }
 
-            // User's posts
             items(posts, key = { it.id }) { post ->
                 PostCard(
                     post = post,
-                    isLiked = false, // Simplified for profile view
+                    isLiked = false,
                     onLikeClick = {},
-                    onClick = { onPostClick(post.id) }
+                    onClick = { onPostClick(post.id.toString()) }
                 )
             }
         }

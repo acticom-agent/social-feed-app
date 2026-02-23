@@ -21,9 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.socialfeed.data.db.dao.CommentWithUser
+import com.example.socialfeed.data.api.ApiComment
 import com.example.socialfeed.viewmodel.PostDetailViewModel
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,7 +34,7 @@ fun PostDetailScreen(
     viewModel: PostDetailViewModel = viewModel(
         factory = PostDetailViewModel.Factory(
             LocalContext.current.applicationContext as Application,
-            postId
+            postId.toIntOrNull() ?: 0
         )
     )
 ) {
@@ -55,20 +54,16 @@ fun PostDetailScreen(
         )
 
         post?.let { p ->
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                // Post content
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 item {
                     Column {
-                        // Header
                         Row(
                             modifier = Modifier.padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (p.avatarPath != null) {
+                            if (p.author.avatarUrl != null) {
                                 AsyncImage(
-                                    model = File(p.avatarPath),
+                                    model = p.author.avatarUrl,
                                     contentDescription = "Avatar",
                                     modifier = Modifier.size(40.dp).clip(CircleShape),
                                     contentScale = ContentScale.Crop
@@ -80,13 +75,13 @@ fun PostDetailScreen(
                                     color = MaterialTheme.colorScheme.primaryContainer
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
-                                        Text(p.username.take(1).uppercase())
+                                        Text(p.author.username.take(1).uppercase())
                                     }
                                 }
                             }
                             Spacer(Modifier.width(10.dp))
                             Column {
-                                Text(p.username, fontWeight = FontWeight.SemiBold)
+                                Text(p.author.username, fontWeight = FontWeight.SemiBold)
                                 Text(
                                     formatTime(p.createdAt),
                                     style = MaterialTheme.typography.bodySmall,
@@ -95,9 +90,9 @@ fun PostDetailScreen(
                             }
                         }
 
-                        if (p.imagePath != null) {
+                        if (p.imageUrl != null) {
                             AsyncImage(
-                                model = File(p.imagePath),
+                                model = p.imageUrl,
                                 contentDescription = "Post image",
                                 modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp),
                                 contentScale = ContentScale.Crop
@@ -112,7 +107,6 @@ fun PostDetailScreen(
                             )
                         }
 
-                        // Like row
                         Row(
                             modifier = Modifier.padding(horizontal = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -125,10 +119,7 @@ fun PostDetailScreen(
                                     else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Text(
-                                "${p.likeCount} likes",
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                            Text("${p.count?.likes ?: 0} likes", style = MaterialTheme.typography.bodySmall)
                         }
 
                         Divider()
@@ -142,13 +133,11 @@ fun PostDetailScreen(
                     }
                 }
 
-                // Comments
                 items(comments, key = { it.id }) { comment ->
                     CommentItem(comment)
                 }
             }
 
-            // Comment input
             Divider()
             Row(
                 modifier = Modifier
@@ -182,13 +171,11 @@ fun PostDetailScreen(
 }
 
 @Composable
-private fun CommentItem(comment: CommentWithUser) {
-    Row(
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-    ) {
-        if (comment.avatarPath != null) {
+private fun CommentItem(comment: ApiComment) {
+    Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+        if (comment.author.avatarUrl != null) {
             AsyncImage(
-                model = File(comment.avatarPath),
+                model = comment.author.avatarUrl,
                 contentDescription = "Avatar",
                 modifier = Modifier.size(28.dp).clip(CircleShape),
                 contentScale = ContentScale.Crop
@@ -200,39 +187,35 @@ private fun CommentItem(comment: CommentWithUser) {
                 color = MaterialTheme.colorScheme.primaryContainer
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        comment.username.take(1).uppercase(),
-                        style = MaterialTheme.typography.labelSmall
-                    )
+                    Text(comment.author.username.take(1).uppercase(), style = MaterialTheme.typography.labelSmall)
                 }
             }
         }
         Spacer(Modifier.width(8.dp))
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    comment.username,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Text(comment.author.username, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.width(6.dp))
-                Text(
-                    formatTime(comment.createdAt),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text(formatTime(comment.createdAt), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(comment.text, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
 
-private fun formatTime(millis: Long): String {
-    val diff = System.currentTimeMillis() - millis
-    return when {
-        diff < 60_000 -> "just now"
-        diff < 3_600_000 -> "${diff / 60_000}m"
-        diff < 86_400_000 -> "${diff / 3_600_000}h"
-        else -> SimpleDateFormat("MMM d", Locale.getDefault()).format(Date(millis))
+private fun formatTime(isoString: String): String {
+    return try {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        val date = sdf.parse(isoString) ?: return isoString
+        val diff = System.currentTimeMillis() - date.time
+        when {
+            diff < 60_000 -> "just now"
+            diff < 3_600_000 -> "${diff / 60_000}m"
+            diff < 86_400_000 -> "${diff / 3_600_000}h"
+            else -> SimpleDateFormat("MMM d", Locale.getDefault()).format(date)
+        }
+    } catch (e: Exception) {
+        isoString
     }
 }

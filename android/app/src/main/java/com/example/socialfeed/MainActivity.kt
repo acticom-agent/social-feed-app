@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.socialfeed.data.api.TokenManager
 import com.example.socialfeed.data.datastore.UserPreferences
 import com.example.socialfeed.ui.navigation.Screen
 import com.example.socialfeed.ui.navigation.SocialFeedNavGraph
@@ -19,17 +20,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val context = LocalContext.current
             val prefs = remember { UserPreferences(context) }
-            val isSetup by prefs.isProfileSetup.collectAsState(initial = null)
+            val tokenManager = remember { (application as SocialFeedApp).tokenManager }
             val darkModePref by prefs.darkMode.collectAsState(initial = null)
             val systemDark = isSystemInDarkTheme()
             val darkMode = darkModePref ?: systemDark
 
+            val startDestination = if (tokenManager.isLoggedIn) Screen.Feed.route else Screen.Auth.route
+
             SocialFeedTheme(darkTheme = darkMode, dynamicColor = false) {
-                when (isSetup) {
-                    null -> {} // Loading
-                    true -> SocialFeedNavGraph(startDestination = Screen.Feed.route)
-                    false -> SocialFeedNavGraph(startDestination = Screen.Setup.route)
-                }
+                SocialFeedNavGraph(startDestination = startDestination)
             }
         }
     }

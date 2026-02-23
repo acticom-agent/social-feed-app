@@ -3,31 +3,40 @@ package com.example.socialfeed.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.socialfeed.data.db.SocialFeedDatabase
-import com.example.socialfeed.data.db.dao.PostWithDetails
-import com.example.socialfeed.data.db.entity.User
-import com.example.socialfeed.data.datastore.UserPreferences
+import com.example.socialfeed.SocialFeedApp
+import com.example.socialfeed.data.api.ApiClient
+import com.example.socialfeed.data.api.ApiPost
+import com.example.socialfeed.data.api.ApiUser
 import com.example.socialfeed.data.repository.PostRepository
 import com.example.socialfeed.data.repository.UserRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = SocialFeedDatabase.getInstance(application)
-    private val userRepo = UserRepository(db.userDao())
-    private val postRepo = PostRepository(db.postDao())
-    private val prefs = UserPreferences(application)
+    private val userRepo = UserRepository(ApiClient.service)
+    private val postRepo = PostRepository(ApiClient.service)
+    private val tokenManager = (application as SocialFeedApp).tokenManager
 
-    val currentUserId: StateFlow<String?> = prefs.currentUserId
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _user = MutableStateFlow<ApiUser?>(null)
+    val user: StateFlow<ApiUser?> = _user
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val user: StateFlow<User?> = currentUserId.flatMapLatest { userId ->
-        if (userId != null) userRepo.observeById(userId) else flowOf(null)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _posts = MutableStateFlow<List<ApiPost>>(emptyList())
+    val posts: StateFlow<List<ApiPost>> = _posts
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val posts: StateFlow<List<PostWithDetails>> = currentUserId.flatMapLatest { userId ->
-        if (userId != null) postRepo.getPostsByUser(userId) else flowOf(emptyList())
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    init {
+        loadProfile()
+    }
+
+    fun loadProfile() {
+        viewModelScope.launch {
+            val userId = tokenManager.userId
+            if (userId > 0) {
+                userRepo.getUser(userId).onSuccess { _user.value = it }
+                // Filter user's posts from feed
+                postRepo.getFeed(100, 0).onSuccess { allPosts ->
+                    _posts.value = allPosts.filter { it.author.id == userId }
+                }
+            }
+        }
+    }
 }

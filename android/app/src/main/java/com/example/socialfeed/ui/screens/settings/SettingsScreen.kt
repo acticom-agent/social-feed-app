@@ -1,6 +1,5 @@
 package com.example.socialfeed.ui.screens.settings
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -9,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,41 +20,22 @@ fun SettingsScreen(
     onProfileReset: () -> Unit,
     viewModel: SettingsViewModel = viewModel()
 ) {
-    val context = LocalContext.current
     val darkMode by viewModel.darkMode.collectAsState()
-    var showClearDialog by remember { mutableStateOf(false) }
-    var showResetDialog by remember { mutableStateOf(false) }
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
-    if (showClearDialog) {
+    if (showLogoutDialog) {
         AlertDialog(
-            onDismissRequest = { showClearDialog = false },
-            title = { Text("Clear All Data") },
-            text = { Text("This will permanently delete all posts, comments, likes, and your profile. This cannot be undone.") },
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Logout") },
+            text = { Text("Are you sure you want to logout?") },
             confirmButton = {
                 TextButton(onClick = {
-                    showClearDialog = false
-                    viewModel.clearAllData { onProfileReset() }
-                }) { Text("Clear", color = MaterialTheme.colorScheme.error) }
+                    showLogoutDialog = false
+                    viewModel.logout { onProfileReset() }
+                }) { Text("Logout", color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { showClearDialog = false }) { Text("Cancel") }
-            }
-        )
-    }
-
-    if (showResetDialog) {
-        AlertDialog(
-            onDismissRequest = { showResetDialog = false },
-            title = { Text("Reset Profile") },
-            text = { Text("This will reset your profile. You'll need to set up a new one. Your posts will remain.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    showResetDialog = false
-                    viewModel.resetProfile { onProfileReset() }
-                }) { Text("Reset", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showLogoutDialog = false }) { Text("Cancel") }
             }
         )
     }
@@ -72,7 +51,6 @@ fun SettingsScreen(
         )
 
         Column(Modifier.padding(16.dp)) {
-            // Dark mode toggle
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -100,34 +78,10 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Export as JSON
             SettingsButton(
-                icon = Icons.Filled.Download,
-                text = "Export as JSON",
-                onClick = {
-                    viewModel.exportAsJson { path ->
-                        Toast.makeText(context, "Exported to $path", Toast.LENGTH_LONG).show()
-                    }
-                }
-            )
-
-            Spacer(Modifier.height(8.dp))
-
-            // Reset profile
-            SettingsButton(
-                icon = Icons.Filled.PersonOff,
-                text = "Reset Profile",
-                onClick = { showResetDialog = true },
-                isDestructive = true
-            )
-
-            Spacer(Modifier.height(8.dp))
-
-            // Clear all data
-            SettingsButton(
-                icon = Icons.Filled.DeleteForever,
-                text = "Clear All Data",
-                onClick = { showClearDialog = true },
+                icon = Icons.Filled.Logout,
+                text = "Logout",
+                onClick = { showLogoutDialog = true },
                 isDestructive = true
             )
         }

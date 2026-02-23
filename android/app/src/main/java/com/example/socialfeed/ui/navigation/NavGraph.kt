@@ -16,15 +16,15 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.example.socialfeed.ui.screens.auth.AuthScreen
 import com.example.socialfeed.ui.screens.create.CreatePostScreen
 import com.example.socialfeed.ui.screens.detail.PostDetailScreen
 import com.example.socialfeed.ui.screens.feed.FeedScreen
 import com.example.socialfeed.ui.screens.profile.ProfileScreen
 import com.example.socialfeed.ui.screens.settings.SettingsScreen
-import com.example.socialfeed.ui.screens.setup.ProfileSetupScreen
 
 sealed class Screen(val route: String) {
-    data object Setup : Screen("setup")
+    data object Auth : Screen("auth")
     data object Feed : Screen("feed")
     data object Create : Screen("create")
     data object Profile : Screen("profile")
@@ -90,10 +90,10 @@ fun SocialFeedNavGraph(startDestination: String) {
             startDestination = startDestination,
             modifier = Modifier.padding(padding)
         ) {
-            composable(Screen.Setup.route) {
-                ProfileSetupScreen(onSetupComplete = {
+            composable(Screen.Auth.route) {
+                AuthScreen(onAuthSuccess = {
                     navController.navigate(Screen.Feed.route) {
-                        popUpTo(Screen.Setup.route) { inclusive = true }
+                        popUpTo(Screen.Auth.route) { inclusive = true }
                     }
                 })
             }
@@ -127,7 +127,7 @@ fun SocialFeedNavGraph(startDestination: String) {
                 SettingsScreen(
                     onBack = { navController.popBackStack() },
                     onProfileReset = {
-                        navController.navigate(Screen.Setup.route) {
+                        navController.navigate(Screen.Auth.route) {
                             popUpTo(0) { inclusive = true }
                         }
                     }

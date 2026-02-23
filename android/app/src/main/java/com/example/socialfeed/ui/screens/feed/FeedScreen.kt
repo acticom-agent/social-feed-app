@@ -21,9 +21,9 @@ fun FeedScreen(
     viewModel: FeedViewModel = viewModel()
 ) {
     val posts by viewModel.posts.collectAsState()
+    val likedPosts by viewModel.likedPosts.collectAsState()
     val listState = rememberLazyListState()
 
-    // Load more when near end
     val shouldLoadMore by remember {
         derivedStateOf {
             val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -36,12 +36,7 @@ fun FeedScreen(
 
     Column(Modifier.fillMaxSize()) {
         CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    "Social Feed",
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            title = { Text("Social Feed", fontWeight = FontWeight.Bold) }
         )
 
         if (posts.isEmpty()) {
@@ -66,12 +61,11 @@ fun FeedScreen(
         } else {
             LazyColumn(state = listState) {
                 items(posts, key = { it.id }) { post ->
-                    val isLiked by viewModel.isPostLiked(post.id).collectAsState(initial = false)
                     PostCard(
                         post = post,
-                        isLiked = isLiked,
+                        isLiked = likedPosts.contains(post.id),
                         onLikeClick = { viewModel.toggleLike(post.id) },
-                        onClick = { onPostClick(post.id) }
+                        onClick = { onPostClick(post.id.toString()) }
                     )
                 }
             }
