@@ -1,71 +1,154 @@
 # Social Feed App
 
-A social feed app (Instagram-lite) built as a monorepo with Android and iOS clients and a REST API backend.
+A social feed app (Instagram-lite) built as a monorepo with Android + iOS clients and three interchangeable REST API backends.
 
 ## Architecture
-- **Pattern:** MVVM + Repository
-- **Storage:** Room (Android) / Core Data (iOS)
-- **Data Flow:** View → ViewModel → Repository → Local Database
 
-## Platforms
+```
+┌─────────────┐     ┌─────────────┐
+│   Android    │     │     iOS     │
+│  Kotlin +    │     │  Swift +    │
+│  Compose     │     │  SwiftUI    │
+└──────┬───────┘     └──────┬──────┘
+       │    REST API / JWT   │
+       └────────┬────────────┘
+                │
+    ┌───────────┼───────────┐
+    │           │           │
+┌───▼───┐  ┌───▼───┐  ┌────▼──┐
+│  JS   │  │  Py   │  │  C#   │
+│Express│  │FastAPI│  │ASP.NET│
+└───┬───┘  └───┬───┘  └───┬───┘
+    └───────┬───┘──────────┘
+            │
+       ┌────▼────┐
+       │ SQLite  │
+       └─────────┘
+```
+
+All three backends serve **identical APIs** on **port 3000**. Run one at a time — the mobile apps work with any of them.
+
+## Backends
+
+| | Stack | Directory | Run |
+|---|---|---|---|
+| 📦 **JS** | Node.js + Express + TypeScript + Prisma | `backend-js/` | `npm run dev` |
+| 🐍 **Python** | FastAPI + SQLAlchemy + Pydantic | `backend-py/` | `uvicorn main:app --port 3000` |
+| 🔷 **C#** | ASP.NET Core + EF Core | `backend-cs/` | `dotnet run --urls http://localhost:3000` |
+
+### API Endpoints
+
+All backends implement these endpoints identically:
+
+**Auth**
+- `POST /api/auth/register` — Register (username, password) → JWT
+- `POST /api/auth/login` — Login → JWT
+- `GET /api/auth/me` — Current user (🔒)
+
+**Posts**
+- `GET /api/posts?limit=20&offset=0` — List posts (paginated)
+- `POST /api/posts` — Create post (🔒)
+- `GET /api/posts/:id` — Get post with comments
+- `DELETE /api/posts/:id` — Delete own post (🔒)
+
+**Likes**
+- `POST /api/posts/:id/like` — Toggle like (🔒)
+- `GET /api/posts/:id/likes` — Like count + liked status
+
+**Comments**
+- `GET /api/posts/:id/comments` — List comments
+- `POST /api/posts/:id/comments` — Add comment (🔒)
+- `DELETE /api/comments/:id` — Delete own comment (🔒)
+
+**Users**
+- `GET /api/users/:id` — Get profile
+- `PUT /api/users/me` — Update profile (🔒)
+
+🔒 = Requires `Authorization: Bearer <token>` header
+
+### Seed Data
+
+All backends seed the same test data:
+- **Users:** `alice`, `bob`, `charlie` (password: `password`)
+- **Posts:** 3 sample posts with likes and comments
+
+## Mobile Apps
 
 ### Android (`android/`)
-- Kotlin + Jetpack Compose
-- Room + Coroutines + Flow
-- Material 3 Design
-- DataStore for settings
+- Kotlin + Jetpack Compose + Material 3
+- Retrofit + OkHttp for API calls
+- JWT stored in SharedPreferences
+- MVVM architecture
 
 ### iOS (`ios/`)
 - Swift + SwiftUI
-- Core Data + Combine
-- FileManager for media
+- URLSession for API calls
+- JWT stored in UserDefaults
+- MVVM architecture
 
 ## Features
-- Local user profile (username + avatar)
-- Create posts with text and optional images
-- Like and comment on posts
-- Home feed with infinite scroll
-- Profile view with user's posts
-- Settings (clear data, export JSON, reset profile)
-- Dark mode support
-- Full offline functionality
+- 🔐 Login / Register with JWT auth
+- 📰 Home feed with paginated posts
+- ✍️ Create posts with text and optional images
+- ❤️ Like and comment on posts
+- 👤 User profiles
+- ⚙️ Settings (dark mode, logout)
 
 ## Screens
-1. **Profile Setup** - First launch username/avatar setup
-2. **Home Feed** - Vertical scrolling post feed
-3. **Create Post** - Text + image composer
-4. **Post Detail** - Full post with comments
-5. **Profile** - User info and their posts
-6. **Settings** - Data management
+1. **Login / Register** — Auth screen on first launch
+2. **Home Feed** — Scrolling post feed from API
+3. **Create Post** — Text + image composer
+4. **Post Detail** — Full post with comments
+5. **Profile** — User info and their posts
+6. **Settings** — Account and app settings
 
-## Data Model
-- **User** - id, username, avatarPath
-- **Post** - id, authorId, text, imagePath, createdAt
-- **Like** - postId, userId
-- **Comment** - id, postId, authorId, text, createdAt
+## Quick Start
 
-### Backend (`backend/`)
-- Node.js + TypeScript + Express
-- Prisma ORM + SQLite
-- JWT authentication
-- REST API: auth, users, posts, likes, comments
-- File upload for images (Multer)
+### 1. Start a backend (pick one)
 
-See [`backend/README.md`](backend/README.md) for full API docs.
-
-## Build
-
-### Backend
+**Node.js:**
 ```bash
-cd backend && npm install && cp .env.example .env && npx prisma db push && npm run dev
+cd backend-js
+npm install
+cp .env.example .env
+npx prisma db push
+npx tsx src/seed.ts
+npm run dev
 ```
 
-### Android
+**Python:**
 ```bash
-cd android && ./gradlew assembleDebug
+cd backend-py
+pip install -r requirements.txt
+python seed.py
+uvicorn main:app --port 3000
 ```
 
-### iOS
+**C#:**
 ```bash
-cd ios && xcodebuild -scheme SocialFeed -destination 'platform=iOS Simulator,name=iPhone 15'
+cd backend-cs
+dotnet run --urls http://localhost:3000
+# Seeds automatically on first run
 ```
+
+### 2. Build & run mobile apps
+
+**Android:**
+```bash
+cd android
+./gradlew assembleDebug
+# Install on emulator (uses 10.0.2.2:3000 → host localhost)
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+**iOS:**
+```bash
+cd ios
+xcodebuild -project SocialFeed.xcodeproj -scheme SocialFeed \
+  -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
+# Uses localhost:3000 directly from simulator
+```
+
+## Repository
+
+- **GitHub:** [acticom-agent/social-feed-app](https://github.com/acticom-agent/social-feed-app)
