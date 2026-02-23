@@ -1,0 +1,5 @@
+bin/
+obj/
+social-feed.db*
+uploads/*
+!uploads/.gitkeep
