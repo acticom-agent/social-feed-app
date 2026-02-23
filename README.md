@@ -1,6 +1,6 @@
-# Social Feed App (Local-Only)
+# Social Feed App
 
-A local-first social feed app (Instagram-lite) built as a monorepo with Android and iOS clients. No backend required — all data lives on the device.
+A social feed app (Instagram-lite) built as a monorepo with Android and iOS clients and a REST API backend.
 
 ## Architecture
 - **Pattern:** MVVM + Repository
@@ -44,7 +44,21 @@ A local-first social feed app (Instagram-lite) built as a monorepo with Android 
 - **Like** - postId, userId
 - **Comment** - id, postId, authorId, text, createdAt
 
+### Backend (`backend/`)
+- Node.js + TypeScript + Express
+- Prisma ORM + SQLite
+- JWT authentication
+- REST API: auth, users, posts, likes, comments
+- File upload for images (Multer)
+
+See [`backend/README.md`](backend/README.md) for full API docs.
+
 ## Build
+
+### Backend
+```bash
+cd backend && npm install && cp .env.example .env && npx prisma db push && npm run dev
+```
 
 ### Android
 ```bash
