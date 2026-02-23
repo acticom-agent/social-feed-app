@@ -20,3 +20,8 @@ backend/dev.db
 backend/.env
 backend/uploads/*
 !backend/uploads/.gitkeep
+backend-js/node_modules/
+backend-py/__pycache__/
+backend-py/.venv/
+backend-cs/bin/
+backend-cs/obj/
